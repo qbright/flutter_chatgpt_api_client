@@ -32,14 +32,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  int listCounter = 3;
+  ChatGptApiClient client =
+      ChatGptApiClient(api_key, ChatGptModelOption(stream: false));
+
+  TextEditingController textController = TextEditingController();
 
   void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
     // api_key.dart is ignore to commit , just a string for the openai apikey
-    ChatGptApiClient(api_key, ChatGptModelOption(stream: true));
   }
 
   @override
@@ -50,23 +50,57 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+            Expanded(
+              child: Container(
+                color: Colors.grey.shade100,
+                child: ListView.builder(
+                  reverse: true,
+                  itemCount: listCounter,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      child: Text('$index \n adfasd\n\ndfasdf'),
+                    );
+                  },
+                ),
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            Container(
+              padding: const EdgeInsets.all(5),
+              alignment: Alignment.bottomLeft,
+              height: 60,
+              color: Colors.green,
+              child: Row(children: [
+                SizedBox(
+                    width: 300,
+                    child: TextField(
+                      style: const TextStyle(fontSize: 20),
+                      controller: textController,
+                    )),
+                IconButton(
+                  icon: const Icon(Icons.send),
+                  onPressed: () {
+                    String text = textController.text;
+                    textController.clear();
+                    client.sendMessage(text,
+                        onData: (ChatGptApiResponse response) {
+                      print('rrrrrrrrrr');
+                      print(response);
+                    });
+                    // print(textController.text);
+                  },
+                )
+              ]),
             ),
+            // Positioned(
+            //   child: Row(children: [Text('23'), Text('444')]),
+            //   bottom: 0,
+            //   left: 0,
+            // )
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

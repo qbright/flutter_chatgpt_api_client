@@ -8,19 +8,37 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 part './chatgpt_api_options.dart';
+part './chatgpt_api_response.dart';
 
 /// A Calculator.
 class ChatGptApiClient {
   final String apiKey;
   final ChatGptModelOption chatGptModelOption;
   ChatGptApiClient(this.apiKey, this.chatGptModelOption) {
-    sendMessage('你是ChatGpt吗?');
+    chatGptModelOption.pushPropmt(
+        '<|endoftext|>You are ChatGPT, a large language model trained by OpenAI.<|endoftext|>');
   }
 
-  sendMessage(String msg) async {
-    this.chatGptModelOption.pushPropmt(msg);
-    print('msg');
+  cleanPropmt() {
+    chatGptModelOption.propmt.clear();
+  }
 
+  sendMessage(String msg,
+      {
+      /// callback when chatGptModelOption.propmt = true and response data come
+      Function(ChatGptApiResponse response)? onStreamData,
+
+      /// callback when stream response finish
+      Function? onStreamEnd,
+
+      /// callback when response end
+      Function(ChatGptApiResponse response)? onData}) async {
+    // this.chatGptModelOption.pushPropmt('<|endoftext|>');
+    chatGptModelOption.pushPropmt('User:\n $msg<|endoftext|>\n ChatGPT: \n\n');
+    // print('msg ------------------');
+    // print(chatGptModelOption.propmt.join('\n'));
+
+    // print('end meg ------------------');
     Dio dio = Dio();
 
     const url = 'https://api.openai.com/v1/completions';
@@ -50,24 +68,43 @@ class ChatGptApiClient {
       },
     );
 
+    List<ChatGptApiResponse> rss = [];
+
     responseBody.data?.stream
         .transform(unit8Transformer)
         .transform(const Utf8Decoder())
-        // .transform(const LineSplitter())
         .listen((event) {
       // unicode
       String decoded = decodeUniconByString(event);
 
       if (chatGptModelOption.stream) {
         if (decoded.trim() != 'data: [DONE]') {
-          print(jsonDecode(decoded.replaceFirst("data:", "")));
+          if (onStreamData != null) {
+            ChatGptApiResponse rs = ChatGptApiResponse.fromJson(
+                jsonDecode(decoded.replaceFirst("data:", "")));
+            rss.add(rs);
+            onStreamData(rs);
+          }
         } else {
-          print('dddddddddd');
+          if (onStreamEnd != null) {
+            Iterable<String> s = rss.map((ChatGptApiResponse rs) {
+              return rs.choices[0].text;
+            });
+            String ss = s.toList().join();
+            print(ss);
+            onStreamEnd();
+          }
         }
       } else {
-        print(decoded);
+        if (onData != null) {
+          ChatGptApiResponse rs =
+              ChatGptApiResponse.fromJson(jsonDecode(decoded));
+
+          chatGptModelOption.propmt.add('${rs.choices[0].text}<|endoftext|>\n');
+
+          onData(rs);
+        }
       }
-      // print(event);
     });
 
 // stream  response I/flutter (15213): {id: cmpl-6iQ2sGLBQd3InsDTjldnEgRfjE7Yj, object: text_completion, created: 1676044570, choices: [{text: 一, index: 0, logprobs: null, finish_reason: null}], model: text-davinci-003}

@@ -92,7 +92,7 @@ class ChatGptModelOption {
     Map<String, dynamic> json = {};
 
     json['model'] = model;
-    json['prompt'] = propmt;
+    json['prompt'] = propmt.join('\n');
     json['max_tokens'] = max_tokens;
     json['temperature'] = temperature;
     json['top_p'] = top_p;
