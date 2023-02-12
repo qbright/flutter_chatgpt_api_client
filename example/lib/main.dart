@@ -32,7 +32,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int listCounter = 3;
+  List<String> chatList = [];
+  bool sendBtnDisabled = false;
+
+  /// init client
   ChatGptApiClient client =
       ChatGptApiClient(api_key, ChatGptModelOption(stream: false));
 
@@ -57,10 +60,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 color: Colors.grey.shade100,
                 child: ListView.builder(
                   reverse: true,
-                  itemCount: listCounter,
+                  itemCount: chatList.length,
                   itemBuilder: (context, index) {
                     return Container(
-                      child: Text('$index \n adfasd\n\ndfasdf'),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black)),
+                      child: Text(chatList[chatList.length - index - 1]),
                     );
                   },
                 ),
@@ -80,16 +85,31 @@ class _MyHomePageState extends State<MyHomePage> {
                     )),
                 IconButton(
                   icon: const Icon(Icons.send),
-                  onPressed: () {
-                    String text = textController.text;
-                    textController.clear();
-                    client.sendMessage(text,
-                        onData: (ChatGptApiResponse response) {
-                      print('rrrrrrrrrr');
-                      print(response);
-                    });
-                    // print(textController.text);
-                  },
+                  onPressed: sendBtnDisabled
+                      ? null
+                      : () {
+                          String text = textController.text;
+                          textController.clear();
+                          setState(() {
+                            chatList.add('Me:\n $text');
+                            sendBtnDisabled = true;
+                          });
+                          // send message
+                          client.sendMessage(text,
+                              onData: (ChatGptApiResponse response) {
+                            print(response);
+                            setState(() {
+                              chatList.add(
+                                  'ChatGpt: \n ${response.choices[0].text}');
+                              sendBtnDisabled = false;
+                            });
+                          }, onStreamData: (ChatGptApiResponse response) {
+                            // print(response);
+                          }, onStreamEnd: () {
+                            // print('end');
+                          });
+                          // print(textController.text);
+                        },
                 )
               ]),
             ),

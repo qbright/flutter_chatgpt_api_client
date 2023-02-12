@@ -12,7 +12,6 @@ class ChatGptApiResponse {
 
   factory ChatGptApiResponse.fromJson(Map<String, dynamic> json) {
     List<ResponseChoice> choices = [];
-    print(json['choices'][0]);
     (json['choices'] as List<dynamic>).forEach((item) {
       choices.add(ResponseChoice.fromJson(item));
     });

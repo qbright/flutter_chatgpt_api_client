@@ -10,13 +10,18 @@ For general information about developing packages, see the Dart guide for
 and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages).
 -->
+## ChatGpt Api client
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+you can request the chatgpt by the openai api
+
+more detail about the openai api: [comletions](https://platform.openai.com/docs/api-reference/completions)
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+* ask questions to ChatGpt
+* full model options supports , parameters detail: [comletions](https://platform.openai.com/docs/api-reference/completions)
+* propmt support
+* normal request and stream request support
 
 ## Getting started
 
@@ -25,15 +30,26 @@ start using the package.
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+the full example you can see the `./example`
 
 ```dart
-const like = 'sample';
+/// init instance with the  model options
+ChatGptApiClient client =
+      ChatGptApiClient(api_key, ChatGptModelOption(stream: false));
+
+/// send message to chatgpt
+ client.sendMessage(text,
+		    onData: (ChatGptApiResponse response) {
+		          print(response);
+		    }, 
+		    onStreamData: (ChatGptApiResponse response) {
+			  print(response);
+		    }, 
+		    onStreamEnd: () {
+			  print('end');
+		     });
 ```
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+If you have any questions, you can directly raise the issue

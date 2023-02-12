@@ -85,19 +85,40 @@ class ChatGptModelOption {
       this.logit_bias});
 
   pushPropmt(String msg) {
-    this.propmt.add(msg);
+    propmt.add(msg);
   }
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
 
     json['model'] = model;
-    json['prompt'] = propmt.join('\n');
+
+    json['suffix'] = suffix;
+
     json['max_tokens'] = max_tokens;
+
     json['temperature'] = temperature;
+
     json['top_p'] = top_p;
+    json['prompt'] = propmt.join('\n');
     json['n'] = n;
     json['stream'] = stream;
+
+    if (logprobs != null) {
+      json['logprobs'] = logprobs;
+    }
+
+    json['echo'] = echo;
+
+    if (stop != null) {
+      json['stop'] = stop;
+    }
+    json['presence_penalty'] = presence_penalty;
+    json['frequency_penalty'] = frequency_penalty;
+    json['best_of'] = best_of;
+    if (logit_bias != null) {
+      json['logit_bias'] = logit_bias;
+    }
 
     return json;
   }

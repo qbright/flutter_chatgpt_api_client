@@ -33,28 +33,12 @@ class ChatGptApiClient {
 
       /// callback when response end
       Function(ChatGptApiResponse response)? onData}) async {
-    // this.chatGptModelOption.pushPropmt('<|endoftext|>');
     chatGptModelOption.pushPropmt('User:\n $msg<|endoftext|>\n ChatGPT: \n\n');
-    // print('msg ------------------');
-    // print(chatGptModelOption.propmt.join('\n'));
 
-    // print('end meg ------------------');
     Dio dio = Dio();
 
     const url = 'https://api.openai.com/v1/completions';
 
-    // Response responseBody = await dio.post(url,
-    //     data: chatGptModelOption.toJson(),
-    //     options: Options(headers: {
-    //       'content-type': 'application/json',
-    //       'Authorization': 'Bearer $apiKey'
-    //     }));
-
-    // print(responseBody.data);
-// {id: cmpl-6iZY6oCweuSeI8b83fUiVeLKJETN3, object: text_completion, created: 1676081102, model: text-davinci-003, choices: [{text:
-//  I/flutter (15213): 我是一个学生。, index: 0, logprobs: null, finish_reason: stop}], usage: {prompt_tokens: 6, completion_tokens: 12, total_tokens: 18}}
-
-// // stream ////////////////////////////////////
     Response<ResponseBody> responseBody = await dio.post(url,
         data: chatGptModelOption.toJson(),
         options: Options(headers: {
@@ -91,7 +75,7 @@ class ChatGptApiClient {
               return rs.choices[0].text;
             });
             String ss = s.toList().join();
-            print(ss);
+            chatGptModelOption.propmt.add('$ss<|endoftext|>\n');
             onStreamEnd();
           }
         }
@@ -106,11 +90,6 @@ class ChatGptApiClient {
         }
       }
     });
-
-// stream  response I/flutter (15213): {id: cmpl-6iQ2sGLBQd3InsDTjldnEgRfjE7Yj, object: text_completion, created: 1676044570, choices: [{text: 一, index: 0, logprobs: null, finish_reason: null}], model: text-davinci-003}
-// stream end response [DONE]
-
-//     //end stream ////////////////////////////////////
   }
 }
 
