@@ -1,7 +1,8 @@
 name: chatgpt_api_client
 description: the chatgpt api client
 version: 0.0.1
-homepage:
+homepage: https://github.com/qbright/flutter_chatgpt_api_client
+repository: https://github.com/qbright/flutter_chatgpt_api_client
 
 environment:
   sdk: '>=2.19.2 <3.0.0'

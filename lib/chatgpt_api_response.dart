@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 part of './chatgpt_api_client.dart';
 
 class ChatGptApiResponse {
@@ -12,9 +14,9 @@ class ChatGptApiResponse {
 
   factory ChatGptApiResponse.fromJson(Map<String, dynamic> json) {
     List<ResponseChoice> choices = [];
-    (json['choices'] as List<dynamic>).forEach((item) {
+    for (var item in (json['choices'] as List<dynamic>)) {
       choices.add(ResponseChoice.fromJson(item));
-    });
+    }
     ResponseUsage? usage =
         json['usage'] != null ? ResponseUsage.fromJson(json['usage']) : null;
     return ChatGptApiResponse(
