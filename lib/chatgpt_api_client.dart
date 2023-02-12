@@ -10,7 +10,6 @@ import 'package:flutter/foundation.dart';
 part './chatgpt_api_options.dart';
 part './chatgpt_api_response.dart';
 
-/// A Calculator.
 class ChatGptApiClient {
   final String apiKey;
   final ChatGptModelOption chatGptModelOption;
