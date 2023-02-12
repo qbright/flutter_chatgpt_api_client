@@ -1,5 +1,5 @@
 name: chatgpt_api_client
-description: the chatgpt api client
+description: the chatgpt api client base on openai api , you can use your own apikey to ask chatgpt questions 
 version: 0.0.1
 homepage: https://github.com/qbright/flutter_chatgpt_api_client
 repository: https://github.com/qbright/flutter_chatgpt_api_client
