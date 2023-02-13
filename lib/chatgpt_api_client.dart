@@ -44,7 +44,6 @@ class ChatGptApiClient {
           chatGptModelOption.propmt.length -
               chatGptModelOption.maxPropmtStack!);
     }
-    print(chatGptModelOption.propmt);
     Response<ResponseBody> responseBody = await dio.post(url,
         data: chatGptModelOption.toJson(),
         options: Options(headers: {
