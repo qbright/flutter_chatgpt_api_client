@@ -10,7 +10,7 @@ class ChatGptModelOption {
   /// The prompt(s) to generate completions for, encoded as a string, array of strings, array of tokens, or array of token arrays.
   /// Note that <|endoftext|> is the document separator that the model sees during training
   /// so if a prompt is not specified the model will generate as if from the beginning of a new document.
-  final List<String> propmt = [];
+  List<String> propmt = [];
 
   /// The suffix that comes after a completion of inserted text.
   final String? suffix;
@@ -70,6 +70,10 @@ class ChatGptModelOption {
   /// As an example, you can pass {"50256": -100} to prevent the <|endoftext|> token from being generated.
   final Map<String, dynamic>? logit_bias;
 
+  /// The maximum number of propmt, if not set, it is unlimited
+  /// Set it to determine the propmt count by each request
+  final int? maxPropmtStack;
+
   ChatGptModelOption(
       {this.model = "text-davinci-003",
       this.suffix,
@@ -84,6 +88,7 @@ class ChatGptModelOption {
       this.presence_penalty = 0,
       this.frequency_penalty = 0,
       this.best_of = 1,
+      this.maxPropmtStack,
       this.logit_bias});
 
   pushPropmt(String msg) {
@@ -102,7 +107,7 @@ class ChatGptModelOption {
     json['temperature'] = temperature;
 
     json['top_p'] = top_p;
-    json['prompt'] = propmt.join('\n');
+    json['prompt'] = propmt.join('');
     json['n'] = n;
     json['stream'] = stream;
 

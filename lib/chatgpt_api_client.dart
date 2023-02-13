@@ -32,12 +32,19 @@ class ChatGptApiClient {
 
       /// callback when response end
       Function(ChatGptApiResponse response)? onData}) async {
-    chatGptModelOption.pushPropmt('User:\n $msg<|endoftext|>\n ChatGPT: \n\n');
+    chatGptModelOption.pushPropmt('User:\n $msg<|endoftext|>\n ChatGPT:\n ');
 
     Dio dio = Dio();
 
     const url = 'https://api.openai.com/v1/completions';
 
+    if (chatGptModelOption.maxPropmtStack != null &&
+        chatGptModelOption.maxPropmtStack! < chatGptModelOption.propmt.length) {
+      chatGptModelOption.propmt = chatGptModelOption.propmt.sublist(
+          chatGptModelOption.propmt.length -
+              chatGptModelOption.maxPropmtStack!);
+    }
+    print(chatGptModelOption.propmt);
     Response<ResponseBody> responseBody = await dio.post(url,
         data: chatGptModelOption.toJson(),
         options: Options(headers: {

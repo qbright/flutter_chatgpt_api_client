@@ -36,8 +36,8 @@ class _MyHomePageState extends State<MyHomePage> {
   bool sendBtnDisabled = false;
 
   /// init client
-  ChatGptApiClient client =
-      ChatGptApiClient(api_key, ChatGptModelOption(stream: false));
+  ChatGptApiClient client = ChatGptApiClient(
+      api_key, ChatGptModelOption(stream: false, maxPropmtStack: 3));
 
   TextEditingController textController = TextEditingController();
 
@@ -100,7 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             print(response);
                             setState(() {
                               chatList.add(
-                                  'ChatGpt: \n ${response.choices[0].text}');
+                                  'ChatGpt:\n ${response.choices[0].text}');
                               sendBtnDisabled = false;
                             });
                           }, onStreamData: (ChatGptApiResponse response) {
